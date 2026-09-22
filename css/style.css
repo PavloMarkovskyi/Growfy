@@ -20,6 +20,8 @@ body {
 }
 .page__main {
 }
+.page__clients {
+}
 .button {
   display: inline-block;
   background-color: #3d96f4;
@@ -367,5 +369,81 @@ body {
   }
   .main__content {
     align-self: stretch;
+  }
+}
+
+.clients {
+  padding-top: 100px;
+  padding-bottom: 70px;
+}
+.clients__container {
+}
+.clients__title {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 14px;
+  line-height: 1.57;
+  color: #fff;
+  margin-bottom: 44px;
+}
+
+/* .clients__items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 15px;
+}
+.clients__item img {
+  width: 100%;
+} */
+.clients__items {
+  /* display: flex; */
+  /* gap: 40px; */
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.clients__items-track {
+  display: flex;
+  gap: 40px;
+  animation: scroll 20s linear infinite;
+}
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.clients__items::before,
+.clients__items::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 100px; /* ширина градієнта */
+  height: 100%;
+  z-index: 2;
+  pointer-events: none; /* щоб не заважало клікам */
+}
+
+.clients__items::before {
+  left: 0;
+  background: linear-gradient(to right, #0d0d11, transparent);
+}
+
+.clients__items::after {
+  right: 0;
+  background: linear-gradient(to left, #0d0d11, transparent);
+}
+@media (max-width: 768px) {
+  .clients__title {
+    margin-bottom: 22px;
+  }
+  .clients__items-track {
+    gap: 20px;
+    animation: scroll 12s linear infinite;
   }
 }
