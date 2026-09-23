@@ -6,74 +6,71 @@ function documentClick(e) {
   }
 }
 window.addEventListener("DOMContentLoaded", () => {
-  const track1 = document.getElementById("track1");
-  const track2 = document.getElementById("track2");
+  const container = document.querySelector(".clients__items");
+  const track = document.getElementById("track");
   const GAP = 40;
-  let width = track1.scrollWidth + GAP;
 
-  let pos1 = 0;
-  let pos2 = width;
-  let speed = 1;
+  const originalItems = Array.from(track.children).map((c) =>
+    c.cloneNode(true),
+  );
+  function setup() {
+    track.innerHTML = "";
+    originalItems.forEach((c) => track.appendChild(c.cloneNode(true)));
 
-  function updateSpeed() {
-    const w = window.innerWidth + GAP;
-    if (w <= 480) speed = 2;
-    else if (w <= 768) speed = 1.5;
-    else speed = 1;
+    let guard = 0;
+    while (track.scrollWidth < container.clientWidth && guard < 20) {
+      originalItems.forEach((c) => track.appendChild(c.cloneNode(true)));
+      guard++;
+    }
+    const setWidth = track.scrollWidth;
+
+    const currentChildren = Array.from(track.children);
+    currentChildren.forEach((c) => track.appendChild(c.cloneNode(true)));
+
+    const shift = setWidth + GAP;
+    track.style.setProperty("--shift", `-${shift}px`);
+
+    const pxPerSecond = getSpeedPxPerSecond();
+    const duration = shift / pxPerSecond;
+    track.style.animationDuration = `${duration}s`;
+    track.classList.add("is-ready");
   }
-
-  function animate() {
-    pos1 -= speed;
-    pos2 -= speed;
-    if (pos1 <= -width) pos1 = pos2 + width;
-    if (pos2 <= -width) pos2 = pos1 + width;
-
-    track1.style.transform = `translateX(${pos1}px)`;
-    track2.style.transform = `translateX(${pos2}px)`;
-
-    requestAnimationFrame(animate);
+  function getSpeedPxPerSecond() {
+    const w = window.innerWidth;
+    if (w <= 480) return 80;
+    if (w <= 768) return 60;
+    return 40;
   }
   function start() {
-    width = track1.scrollWidth + GAP;
-    pos1 = 0;
-    pos2 = width;
-
-    track1.style.transform = `translateX(${pos1}px)`;
-    track2.style.transform = `translateX(${pos2}px)`;
-
-    track1.classList.add("is-ready");
-    track2.classList.add("is-ready");
-    animate();
+    setup();
   }
-  updateSpeed();
-  const images = track1.querySelectorAll("img");
+
+  const images = track.querySelectorAll("img");
   let loadedCount = 0;
   if (images.length === 0) {
     start();
   } else {
     images.forEach((img) => {
-      if (img.complete) {
+      const done = () => {
         loadedCount++;
-      } else {
-        img.addEventListener("load", () => {
-          loadedCount++;
-          if (loadedCount === images.length) start();
-        });
-        img.addEventListener("error", () => {
-          loadedCount++;
-          if (loadedCount === images.length) start();
-        });
+        if (loadedCount === images.length) start();
+      };
+      if (img.complete) done();
+      else {
+        img.addEventListener("load", done);
+        img.addEventListener("error", done);
       }
     });
-    if (loadedCount === images.length) start();
   }
-
+  let resizeTimeout;
   window.addEventListener("resize", () => {
-    width = track1.scrollWidth + GAP;
-    updateSpeed();
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(setup, 200);
   });
-  [track1, track2].forEach((track) => {
-    track.addEventListener("mouseenter", () => (speed = 0));
-    track.addEventListener("mouseleave", updateSpeed);
+  container.addEventListener("mouseenter", () => {
+    track.style.animationPlayState = "paused";
+  });
+  container.addEventListener("mouseleave", () => {
+    track.style.animationPlayState = "running";
   });
 });
