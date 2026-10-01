@@ -790,6 +790,9 @@ body {
 }
 
 .testimonials__items {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
 }
 .testimonials__item {
   background: rgba(129, 129, 139, 0.1);
@@ -797,6 +800,9 @@ body {
   padding: 64px 40px;
 }
 .item-testimonial {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
 }
 .item-testimonial__user {
 }
@@ -839,9 +845,18 @@ body {
   color: #9c9c9c;
 }
 .item-testimonial__title {
+  font-size: 32px;
+  line-height: 1.4;
+  color: #fff;
 }
+
 .item-testimonial__text {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #9c9c9c;
+  flex: 1 1 auto;
 }
+
 .item-testimonial__rating {
 }
 .rating {
